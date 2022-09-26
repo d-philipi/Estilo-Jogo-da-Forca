@@ -57,6 +57,13 @@ body{
     font-weight: bold;
 }
 
+.palavra .ganhou{
+    color: #2DAD58;
+}
+
+.palavra .perdeu{
+    color: #FF0000;
+}
 
 .letras{
     width: 535px;
@@ -66,7 +73,8 @@ body{
     margin: 0 0 40px 0;
 }
 
-.letras li.inativa{
+
+.letras li,.letras li.inativa{
     width: 35px;
     height: 35px;
     border-radius: 5px;
