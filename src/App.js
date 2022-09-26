@@ -1,59 +1,107 @@
 import palavras from "./Palavras";
-import React from "react";
+import alfabeto from "./Alfabeto";
+import React, { useState } from "react";
 
-const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+const imagens = ["./assets/forca0.png","./assets/forca1.png","./assets/forca2.png","./assets/forca3.png","./assets/forca4.png","./assets/forca5.png","./assets/forca6.png"];
 
 export default function App (){
-    return(
-        <>
-            <div class="superior">
-                <img src="./assets/forca0.png" alt="Forca"></img>
-                <div class="sistemaPalavra">
-                    <button>Escolher Palavra</button>
-                    <ul class="palavra">
-                    <li>A</li>
-                    <li>B</li>
-                    <li>A</li>
-                    <li>C</li>
-                    <li>A</li>
-                    <li>T</li>
-                    <li>E</li>
+
+    const [palavra,setPalavra] = useState("");
+    const palavraArray = palavra.split("");
+
+    const [erro,setErro] = useState(0);
+    const [forca,setForca] = useState(imagens[erro]);
+    const [chute,setChute] = useState("");
+    const [atividade,setAtividade] = useState("inativa")
+
+    const [escolherPalavra,setEscolherPalavra] = useState(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
+    const [letras,setLetras] = useState(alfabeto.map((l,index) => <li className={atividade} key={index} data-identifier="letter">{l}</li>));
+    const [input,setInput] = useState(<input disabled type="text" data-identifier="type-guess" value={chute} onChange={e => setChute(e.target.value)}/>);
+    const [botaoInput,setBotaoInput] = useState(<button data-identifier="guess-button">Chutar</button>)
+
+    function chutar(){
+        setChute("");
+        alert("Você ganhou!");
+    }
+
+    function fimJogo(){
+        alert("Você perdeu");
+    }
+
+    function acertou (){
+        setAtividade("inativa");
+
+        console.log("Acertei");
+    }
+
+    function errou (){
+
+        if (erro === 6){
+            fimJogo();
+        }else{
+            let novoErro = erro + 1;
+            setErro(novoErro);
+
+            let novaImagem = imagens[novoErro];
+            setForca(novaImagem);
+
+            setAtividade("inativa");
+        }
+    }
+
+    function comecarJogo(){
+        setPalavra(palavras[Math.floor(Math.random() * (palavras.length + 1))]);
+
+        setEscolherPalavra(<button data-identifier="choose-word">Escolher Palavra</button>);
+
+        setAtividade("ativada");
+
+        setLetras(alfabeto.map((l,index) => <li className={atividade} onClick={palavraArray.includes(l) ? acertou : errou} key={index} data-identifier="letter">{l}</li>));
+
+        setInput(<input type="text" data-identifier="type-guess" value={chute} onChange={e => setChute(e.target.value)}/>);
+
+        setBotaoInput(<button data-identifier="guess-button" onClick={palavra === chute ? chutar : fimJogo}>Chutar</button>);
+    }
+
+    function Superior(){
+        return(
+            <div className="superior">
+                <img src={forca} alt="Forca" data-identifier="game-image"></img>
+                <div className="sistemaPalavra">
+                    {escolherPalavra}
+                    <ul className="palavra" data-identifier="word">
+                    {palavraArray.map((p,index) => <li key={index}><p className="inativo">{p}</p></li>)}
                     </ul>
                 </div>
             </div>
-            <ul class="letras">
-                <li>A</li>
-                <li>B</li>
-                <li>C</li>
-                <li>D</li>
-                <li>E</li>
-                <li>F</li>
-                <li>G</li>
-                <li>H</li>
-                <li>I</li>
-                <li>J</li>
-                <li>K</li>
-                <li>L</li>
-                <li>M</li>
-                <li>N</li>
-                <li>O</li>
-                <li>P</li>
-                <li>Q</li>
-                <li>R</li>
-                <li>S</li>
-                <li>T</li>
-                <li>U</li>
-                <li>V</li>
-                <li>W</li>
-                <li>X</li>
-                <li>Y</li>
-                <li>Z</li>
+        )
+    }
+
+    function Letras(){
+        return(
+            <ul className="letras">
+                {letras}
             </ul>
-            <div class="chute">
+        )
+    }
+
+    function Chute(){
+        return(
+            <div className="chute">
                 <span>Já sei a palavra!</span>
-                <input type="text"></input>
-                <button>Chutar</button>
+                <form>
+                    {input}
+                </form>
+                {botaoInput}
             </div>
+        )
+    }
+
+    return(
+        <>
+            <Superior/>
+            <Letras />
+            <Chute />
         </>
     )
 }

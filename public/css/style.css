@@ -57,27 +57,45 @@ body{
     font-weight: bold;
 }
 
+
 .letras{
-    width: 480px;
+    width: 535px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     margin: 0 0 40px 0;
 }
 
-.letras li{
-    width: 30px;
-    height: 30px;
+.letras li.inativa{
+    width: 35px;
+    height: 35px;
     border-radius: 5px;
-    background-color: #929396;
-    color: #FAFAFA;
+    background-color: #9FAAB5;
+    color: #7F8082;
     margin: 2.5px;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    font-size: 13px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.letras li.ativada{
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: #E1ECF4;
+    color: #4A6F9A;
+    border: 1px solid #A9C6DB;
+    margin: 2.5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 15px;
     font-weight: bold;
 }
 
