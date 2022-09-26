@@ -8,8 +8,8 @@ export default function App (){
 
     const [palavra,setPalavra] = useState("");
     let palavraArray = palavra.split("");
-    const excluidas = [];
-    const acertadas = [];
+    let excluidas = [];
+    let acertadas = [];
 
     const [erro,setErro] = useState(0);
     const [forca,setForca] = useState(imagens[erro]);
@@ -22,29 +22,47 @@ export default function App (){
     const [botaoInput,setBotaoInput] = useState(<button data-identifier="guess-button">Chutar</button>)
 
     function ganhouJogo(){
+        setPalavraEscolhida(palavraArray.map((p,index) => (<li className="ganhou" key={index}><p>{p}</p></li>)));
         setChute("");
         alert("Você ganhou");
+        setEscolherPalavra(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
     }
 
     function perdeuJogo(){
         setPalavraEscolhida(palavraArray.map((p,index) => (<li className="perdeu" key={index}><p>{p}</p></li>)));
         setChute("");
         alert("Você perdeu");
+        setEscolherPalavra(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
     }
 
-    let cont = 0;
+    
     function acertou (lett){
+
         acertadas.push(lett);
         setPalavraEscolhida(palavraArray.map((p,index) => (acertadas.includes(p)) ? <li key={index}><p>{p}</p></li> : <li key={index}><p>_</p></li>))
         excluidas.push(lett);
         setLetras(alfabeto.map((l,index) => (excluidas.includes(l)) ? <li key={index} data-identifier="letter">{l}</li> : <li className="ativada" onClick={palavraArray.includes(l) ? () => acertou(l) : () => errou(l)} key={index} data-identifier="letter">{l}</li>));
-        cont++
+        
+        let cont = 0;
+        for(let i = 0; i < palavraArray.length; i++){
+            if(acertadas.includes(palavraArray[i])){
+                console.log(palavraArray[i])
+            }else{
+                cont++
+            }
+        }
+
+        if(cont === 0){
+            return ganhouJogo();
+        }
+
         console.log(lett);
         console.log("Acertei",cont);
     }
 
     let novoErro = 0;
     function errou (lett){
+
         excluidas.push(lett);
         setLetras(alfabeto.map((l,index) => (excluidas.includes(l)) ? <li key={index} data-identifier="letter">{l}</li> : <li className="ativada" onClick={palavraArray.includes(l) ? () => acertou(l) : () => errou(l)} key={index} data-identifier="letter">{l}</li>));
 
@@ -68,6 +86,14 @@ export default function App (){
     }
 
     function comecarJogo(){
+
+        novoErro = 0;
+
+        excluidas = [];
+
+        acertadas = [];
+
+        setForca(imagens[erro]);
 
         const novaPalavra = palavras[Math.floor(Math.random() * (palavras.length + 1))];
 
