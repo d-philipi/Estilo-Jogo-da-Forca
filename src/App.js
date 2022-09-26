@@ -4,6 +4,17 @@ import React, { useState } from "react";
 
 const imagens = ["./assets/forca0.png","./assets/forca1.png","./assets/forca2.png","./assets/forca3.png","./assets/forca4.png","./assets/forca5.png","./assets/forca6.png"];
 
+function Chute ({chute,setChute,botaoInput,input}){
+        return(
+            <div className="chute">
+                <span>Já sei a palavra!</span>
+                <input type="text" data-identifier="type-guess" value={chute} onChange={e => setChute(e.target.value)}/>
+                {botaoInput}
+            </div>
+        )
+    
+}
+
 export default function App (){
 
     const [palavra,setPalavra] = useState("");
@@ -16,23 +27,41 @@ export default function App (){
     const [chute,setChute] = useState("");
 
     const [palavraEscolhida,setPalavraEscolhida] = useState("");
-    const [escolherPalavra,setEscolherPalavra] = useState(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
     const [letras,setLetras] = useState(alfabeto.map((l,index) => <li key={index} data-identifier="letter">{l}</li>));
-    //const [input,setInput] = useState(<input disabled type="text" data-identifier="type-guess"/>);
-    const [botaoInput,setBotaoInput] = useState(<button data-identifier="guess-button">Chutar</button>)
+    const [input,setInput] = useState(1);
+    let novoInput = input;
+    const [botaoInput,setBotaoInput] = useState(<button data-identifier="guess-button">Chutar</button>);
 
     function ganhouJogo(){
+
+        novoInput = 1;
+
+        setInput(novoInput);
+
+        setBotaoInput(<button data-identifier="guess-button">Chutar</button>);
+
+        setLetras(alfabeto.map((l,index) => <li key={index} data-identifier="letter">{l}</li>));
+
         setPalavraEscolhida(palavraArray.map((p,index) => (<li className="ganhou" key={index}><p>{p}</p></li>)));
+
         setChute("");
-        alert("Você ganhou");
-        setEscolherPalavra(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
     }
 
     function perdeuJogo(){
+
+        novoInput = 1;
+
+        setInput(novoInput);
+
+        setBotaoInput(<button data-identifier="guess-button">Chutar</button>);
+
+        setLetras(alfabeto.map((l,index) => <li key={index} data-identifier="letter">{l}</li>));
+
+        setForca(imagens[6]);
+
         setPalavraEscolhida(palavraArray.map((p,index) => (<li className="perdeu" key={index}><p>{p}</p></li>)));
+
         setChute("");
-        alert("Você perdeu");
-        setEscolherPalavra(<button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>);
     }
 
     
@@ -46,7 +75,6 @@ export default function App (){
         let cont = 0;
         for(let i = 0; i < palavraArray.length; i++){
             if(acertadas.includes(palavraArray[i])){
-                console.log(palavraArray[i])
             }else{
                 cont++
             }
@@ -55,9 +83,6 @@ export default function App (){
         if(cont === 0){
             return ganhouJogo();
         }
-
-        console.log(lett);
-        console.log("Acertei",cont);
     }
 
     let novoErro = 0;
@@ -81,7 +106,6 @@ export default function App (){
             
             const novaImagem = imagens[novoErro];
             setForca(novaImagem);
-            console.log("errou");
         }
     }
 
@@ -93,7 +117,9 @@ export default function App (){
 
         acertadas = [];
 
-        setForca(imagens[erro]);
+        setChute("");
+
+        setForca(imagens[novoErro]);
 
         const novaPalavra = palavras[Math.floor(Math.random() * (palavras.length + 1))];
 
@@ -103,13 +129,13 @@ export default function App (){
 
         setPalavraEscolhida(palavraArray.map((p,index) => <li key={index}><p>_</p></li>));
 
-        setEscolherPalavra(<button data-identifier="choose-word">Escolher Palavra</button>);
-
         setLetras(alfabeto.map((l,index) => <li className="ativada" onClick={palavraArray.includes(l) ? () => acertou(l) : () => errou(l)} key={index} data-identifier="letter">{l}</li>));
 
-        //setInput(<input type="text" data-identifier="type-guess" value={chute} onChange={e => setChute(e.target.value)}/>);
+        novoInput = 2;
 
-        setBotaoInput(<button data-identifier="guess-button" onClick={palavra === chute ? ganhouJogo : perdeuJogo}>Chutar</button>);
+        setInput(novoInput);
+
+        setBotaoInput(<button data-identifier="guess-button" onClick={novaPalavra === chute ? ganhouJogo : perdeuJogo}>Chutar</button>);
     }
 
     function Superior(){
@@ -117,7 +143,7 @@ export default function App (){
             <div className="superior">
                 <img src={forca} alt="Forca" data-identifier="game-image"></img>
                 <div className="sistemaPalavra">
-                    {escolherPalavra}
+                    <button data-identifier="choose-word" onClick={comecarJogo}>Escolher Palavra</button>
                     <ul className="palavra" data-identifier="word">
                     {palavraEscolhida}
                     </ul>
@@ -134,22 +160,15 @@ export default function App (){
         )
     }
 
-    function Chute(){
-        return(
-            <div className="chute">
-                <span>Já sei a palavra!</span>
-                <input type="text" data-identifier="type-guess" value={chute} onChange={e => setChute(e.target.value)}/>
-                {botaoInput}
-            </div>
-        )
-    }
 
     return(
         <>
             <Superior/>
             <Letras />
-            <Chute />
+            <Chute valor={chute} setChute={setChute} botaoInput={botaoInput} input={novoInput} />
         </>
     )
+
+    
 }
 
